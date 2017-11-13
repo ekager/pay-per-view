@@ -107,7 +107,7 @@ public class ViewerInfoFragment extends Fragment implements Validator.Validation
 
         // UI References
         mViewerSalutation = (TextView) view.findViewById(R.id.viewerSalutation);
-        mViewerSalutation.setText(getString(R.string.viewer_info_salutation) + " 1,");
+
         mNameEditText = (EditText) view.findViewById(R.id.nameEditText);
         mEmailEditText = (EditText) view.findViewById(R.id.emailEditText);
 
@@ -122,14 +122,12 @@ public class ViewerInfoFragment extends Fragment implements Validator.Validation
             savedEmail = savedInstanceState.getString("savedEmail");
         }
 
-        if (!TextUtils.isEmpty(savedName)) {
-            mNameEditText.setText(savedName);
+        if (args.containsKey("savedEmail")) {
+            savedEmail = args.getString("savedEmail");
         }
-
-        if (!TextUtils.isEmpty(savedEmail)) {
-            mEmailEditText.setText(savedEmail);
+        if (args.containsKey("savedName")) {
+            savedName = args.getString("savedName");
         }
-
         if (args.containsKey("Viewer")) {
             editViewer = args.getParcelable("Viewer");
             if (editViewer.getEmail() != null) {
@@ -162,6 +160,14 @@ public class ViewerInfoFragment extends Fragment implements Validator.Validation
             nViewers = args.getInt("nViewers");
         }
 
+        if (!TextUtils.isEmpty(savedName)) {
+            mNameEditText.setText(savedName);
+        }
+
+        if (!TextUtils.isEmpty(savedEmail)) {
+            mEmailEditText.setText(savedEmail);
+        }
+
         // Validator
         mValidator = new Validator(this);
         mValidator.setValidationListener(this);
@@ -181,6 +187,8 @@ public class ViewerInfoFragment extends Fragment implements Validator.Validation
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
         button3.setOnClickListener(this);
+
+        mViewerSalutation.setText(getString(R.string.viewer_info_salutation) + " " + Integer.toString(mViewers.size() + 1) + ",");
 
         return view;
     }
@@ -226,6 +234,8 @@ public class ViewerInfoFragment extends Fragment implements Validator.Validation
         args.putInt("MAX_VIEWERS", MAX_VIEWERS);
         args.putString("fragmentTag", fragmentTag);
         args.putInt("nViewers", nViewers);
+        savedName = "";
+        savedEmail = "";
         if (editing) {
             Log.v("ViewerInfo", "editing");
             final Fragment editViewerInfo = new EditViewersFragment();
